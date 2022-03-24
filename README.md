@@ -1,6 +1,6 @@
 # Azure-IoT-Hub
-Azure IoT hub is, as its name suggests, a hub for aggregation of data from IoT devices. In this example, the IoT device in question will be a Raspberry Pi but it could be almost any type of device with an internet connection.
-The Azure IoT hub will not collect, structure or vizualize the data in any way. It only serves as a aggregation point and from there be distributed out to other Azure services for storage analysis and visualization. 
+Azure IoT hub is, as the name suggests, a hub for aggregation of data from IoT devices. In this example, the IoT device in question will be a Raspberry Pi but it could be almost any type of device with an internet connection.
+The Azure IoT hub will not collect, structure or vizualize the data in any way. It only serves as a aggregation point and from there be distributed to other Azure services for storage analysis and visualization. 
 
 ## Requirements
 In order to copy this example you need two things.
@@ -24,18 +24,28 @@ az extension add --name azure-iot
 ```
 
 ## Set up Raspberry pi
-
-
+Before the python script can be run on the Raspberry Pi some dependencies needs to be installed. Access your Raspberry Pi and run the following commands in the terminal:
 ```
 sudo pip3 install azure-iot-device  
 sudo pip3 install azure-iot-hub  
 ```
-Import code, test run
+Import IoTclinet.py to your Raspberry Pi and insert the connection string for your device, then run the script.
+
+While the script is running, its i sending a message to the IoT hub every 3 seconds.
 
 ## Validate
-open Azure CLI
-az iot hub monitor-events --hub-name XYZ --device-id XYZ
+To validate the IoT hub is recieving data, access the Azure CLI and write the following command:
+```
+az iot hub monitor-events --hub-name [iot hub name] --device-id [device id]
+```
+You should now see the messages popping up, one by one, in the CLI.
 
 ## Transfer data
-Create Service bus
-message routing
+Now the hub is succesfully collecting the data, but that does not do us any good if we can only access it via the Azure CLI. In this example, we will add the incoming messages to a Service bus queue but there are many different alternatives available in the IoT hub. Eg. writing the messages directly to a storage account.
+First, create a Service bus and a que in the Azure portal. Follow the microsoft documentation on how to do that ( https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-quickstart-portal )
+
+Access the IoT hub in the Azure portal, under *Hub settings* select *Message routing* and click on *+ Add*. Give the route a unique name and Select the recently created que as an endpoint. Leave the Routing query as "true" to add the entire message to the que.
+
+Done!
+
+
